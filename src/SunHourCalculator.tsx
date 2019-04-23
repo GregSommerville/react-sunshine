@@ -72,6 +72,7 @@ export class SunHourCalculator {
 //==========================================================================
 // The following is based on code originally found at 
 // http://www.esrl.noaa.gov/gmd/grad/solcalc/main.js
+//
 // That code was written by the U.S. government, and powers their NOAA 
 // sunrise/sunset website.  
 // More Info: http://www.esrl.noaa.gov/gmd/grad/solcalc/index.html
@@ -327,7 +328,7 @@ export class SunHourCalculator {
     isNumber(inputVal: string) {
         let oneDecimal = false;
         const inputStr = "" + inputVal;
-        for (const i = 0; i < inputStr.length; i++) {
+        for (let i = 0; i < inputStr.length; i++) {
             const oneChar = inputStr.charAt(i);
             if (i === 0 && (oneChar === "-" || oneChar === "+")) {
                 continue;
@@ -434,7 +435,7 @@ export class SunHourCalculator {
         }
     }
 
-    dayString(jd: number, next: boolean, flag: number) {
+    dayString(jd: number, next: number, flag: number) {
         let output = "";
         // returns a string in the form DDMMMYYYY[ next] to display prev/next rise/set
         // flag=2 for DD MMM, 3 for DD MM YYYY, 4 for DDMMYYYY next/prev
@@ -443,11 +444,12 @@ export class SunHourCalculator {
         } else {
             const z = Math.floor(jd + 0.5);
             const f = (jd + 0.5) - z;
+            let A = 0;
             if (z < 2299161) {
-                const A = z;
+                A = z;
             } else {
                 const alpha = Math.floor((z - 1867216.25) / 36524.25);
-                const A = z + 1 + alpha - Math.floor(alpha / 4);
+                A = z + 1 + alpha - Math.floor(alpha / 4);
             }
             const B = A + 1524;
             const C = Math.floor((B - 122.1) / 365.25);
@@ -516,7 +518,7 @@ export class SunHourCalculator {
     {
         const timeUTC = this.calcSunriseSetUTC(rise, JD, latitude, longitude);
         const newTimeUTC = this.calcSunriseSetUTC(rise, JD + timeUTC / 1440.0, latitude, longitude);
-        if (this.isNumber(newTimeUTC)) {
+        //if (this.isNumber(newTimeUTC)) {
             let timeLocal = newTimeUTC + (timezone * 60.0)
             timeLocal += ((dst) ? 60.0 : 0.0);
             if ((timeLocal >= 0.0) && (timeLocal < 1440.0)) {
@@ -530,26 +532,26 @@ export class SunHourCalculator {
                 }
                 return this.timeDateString(jday, timeLocal);
             }
-        } else { // no sunrise/set found
-            const doy = this.calcDoyFromJD(JD)
-            let jday = 0;
-            if (((latitude > 66.4) && (doy > 79) && (doy < 267)) ||
-                ((latitude < -66.4) && ((doy < 83) || (doy > 263)))) {   //previous sunrise/next sunset
-                if (rise) { // find previous sunrise
-                    jday = this.calcJDofNextPrevRiseSet(0, rise, JD, latitude, longitude, timezone, dst)
-                } else { // find next sunset
-                    jday = this.calcJDofNextPrevRiseSet(1, rise, JD, latitude, longitude, timezone, dst)
-                }
-                return this.dayString(jday, 0, 3);
-            } else {   //previous sunset/next sunrise
-                if (rise == 1) { // find previous sunrise
-                    jday = this.calcJDofNextPrevRiseSet(1, rise, JD, latitude, longitude, timezone, dst)
-                } else { // find next sunset
-                    jday = this.calcJDofNextPrevRiseSet(0, rise, JD, latitude, longitude, timezone, dst)
-                }
-                return this.dayString(jday, 0, 3);
-            }
-        }
+        // } else { // no sunrise/set found
+        //     const doy = this.calcDoyFromJD(JD)
+        //     let jday = 0;
+        //     if (((latitude > 66.4) && (doy > 79) && (doy < 267)) ||
+        //         ((latitude < -66.4) && ((doy < 83) || (doy > 263)))) {   //previous sunrise/next sunset
+        //         if (rise) { // find previous sunrise
+        //             jday = this.calcJDofNextPrevRiseSet(0, rise, JD, latitude, longitude, timezone, dst)
+        //         } else { // find next sunset
+        //             jday = this.calcJDofNextPrevRiseSet(1, rise, JD, latitude, longitude, timezone, dst)
+        //         }
+        //         return this.dayString(jday, 0, 3);
+        //     } else {   //previous sunset/next sunrise
+        //         if (rise == 1) { // find previous sunrise
+        //             jday = this.calcJDofNextPrevRiseSet(1, rise, JD, latitude, longitude, timezone, dst)
+        //         } else { // find next sunset
+        //             jday = this.calcJDofNextPrevRiseSet(0, rise, JD, latitude, longitude, timezone, dst)
+        //         }
+        //         return this.dayString(jday, 0, 3);
+        //     }
+        // }
     }
 
     calcJDofNextPrevRiseSet(next: number, rise: number, JD: number, latitude: number, longitude: number, tz: number, dst: boolean) {
@@ -557,10 +559,10 @@ export class SunHourCalculator {
         const increment = ((next) ? 1.0 : -1.0);
 
         let time = this.calcSunriseSetUTC(rise, julianday, latitude, longitude);
-        while (!this.isNumber(time)) {
-            julianday += increment;
-            time = this.calcSunriseSetUTC(rise, julianday, latitude, longitude);
-        }
+        // while (!this.isNumber(time)) {
+        //     julianday += increment;
+        //     time = this.calcSunriseSetUTC(rise, julianday, latitude, longitude);
+        // }
         let timeLocal = time + tz * 60.0 + ((dst) ? 60.0 : 0.0)
         while ((timeLocal < 0.0) || (timeLocal >= 1440.0)) {
             const incr = ((timeLocal < 0) ? 1 : -1)
