@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export function PlaceSelector() {
+    const [lat, setLat] = useState('');
+    const [lng, setLng] = useState('');
+    const [timezone, setTimezone] = useState('');
 
     const locations = [
         { place: 'New York, NY', lat: 40.712784, lng: -74.005941, tz: -5 },
@@ -18,20 +21,44 @@ export function PlaceSelector() {
         <option key={loc.place}>{loc.place}</option>
       );
 
+      const onPlaceSelectChange = (ev: React.FormEvent) => {
+        // populate side boxes
+        const selectedName = (ev.target as HTMLSelectElement).value;
+        const item = locations.find((element) => element.place == selectedName);
+        if (item) {
+            setLat(String(item.lat));
+            setLng(String(item.lng));
+            setTimezone(String(item.tz));
+        }
+      }
+
+      const onLatChange = (ev: React.FormEvent) => {
+        const value = (ev.target as HTMLInputElement).value;
+        setLat(value);
+      }
+      const onLngChange = (ev: React.FormEvent) => {
+        const value = (ev.target as HTMLInputElement).value;
+        setLng(value);
+      }
+      const onTimezoneSelectChange = (ev: React.FormEvent) => {
+        const zone = (ev.target as HTMLSelectElement).value;
+        setTimezone(zone);
+      }
+
       return (
         <>
             <div className="col-3">
                 <b>Presets:</b><br/>
-                <select name='presetSelect' size={10}>
+                <select name='presetSelect' size={10} onChange={onPlaceSelectChange} >
                 {options}
                 </select>
             </div>
             <div className='col-3'>
                 <br/>
-                <b>Lat:</b> &nbsp; <input type='text' name='lat'></input><br/><br/>
-                <b>Lng:</b> &nbsp; <input type='text' name='lng'></input><br/><br/>
+                <b>Lat:</b> &nbsp; <input type='text' name='lat' value={lat} onChange={onLatChange} ></input><br/><br/>
+                <b>Lng:</b> &nbsp; <input type='text' name='lng' value={lng} onChange={onLngChange}></input><br/><br/>
                 <b>Timezone:</b> &nbsp; 
-                    <select name='timezone'>
+                    <select name='timezone' value={timezone} onChange={onTimezoneSelectChange}>
                         <option value='-5'>Eastern</option>
                         <option value='-6'>Central</option>
                         <option value='-7'>Mountain</option>
