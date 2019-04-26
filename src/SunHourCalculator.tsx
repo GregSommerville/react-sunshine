@@ -1,4 +1,4 @@
-interface DayInfo {
+export interface DayInfo {
     dayNumber: number;
     sunriseTimeAsNum: number;
     sunsetTimeAsNum: number;
@@ -69,6 +69,10 @@ export class SunHourCalculator {
         }
     }
 
+    getSuntimesForYear() : DayInfo[] {
+        return this.suntimes;
+    }
+
 //==========================================================================
 // The following is based on code originally found at 
 // http://www.esrl.noaa.gov/gmd/grad/solcalc/main.js
@@ -102,7 +106,7 @@ export class SunHourCalculator {
         return [sunrise, sunset, sunriseFormatted, sunsetFormatted];
     }
 
-    getFormattedDate(date: string): string {
+    private getFormattedDate(date: string): string {
         const parts = date.split(':');
         const hr = Number(parts[0]);    
         const min = parts[1];
@@ -111,7 +115,7 @@ export class SunHourCalculator {
         return hr + ":" + min + " AM";
     }
 
-    isDateInDST(date: Date): boolean {
+    private isDateInDST(date: Date): boolean {
         // getDay() returns 0 for Sunday, 1 = Mon, etc.
 
         //begins on the second Sunday of March 
@@ -137,7 +141,7 @@ export class SunHourCalculator {
         return (date >= dstStart) && (date < dstEnd);
     }
 
-    getJD(date: Date): number {
+    private getJD(date: Date): number {
         let docmonth = date.getMonth() + 1;
         let docday = date.getDate();
         let docyear = date.getFullYear();
@@ -161,7 +165,7 @@ export class SunHourCalculator {
         return JD
     }
 
-    getTimeLocal(): number {
+    private getTimeLocal(): number {
         let dochr = 20;
         const docmn = 13;
         const docsc = 23;
@@ -178,47 +182,47 @@ export class SunHourCalculator {
         return mins
     }
 
-    calcTimeJulianCent(jd: number): number {
+    private calcTimeJulianCent(jd: number): number {
         const T = (jd - 2451545.0) / 36525.0
         return T
     }
 
-    isLeapYear(yr: number): boolean {
+    private isLeapYear(yr: number): boolean {
         return ((yr % 4 == 0 && yr % 100 != 0) || yr % 400 == 0);
     }
 
-    calcDoyFromJD(jd: number): number {
-        const z = Math.floor(jd + 0.5);
-        const f = (jd + 0.5) - z;
-        let A: number;
-        if (z < 2299161) {
-            A = z;
-        } else {
-            const alpha = Math.floor((z - 1867216.25) / 36524.25);
-            A = z + 1 + alpha - Math.floor(alpha / 4);
-        }
-        const B = A + 1524;
-        const C = Math.floor((B - 122.1) / 365.25);
-        const D = Math.floor(365.25 * C);
-        const E = Math.floor((B - D) / 30.6001);
-        const day = B - D - Math.floor(30.6001 * E) + f;
-        const month = (E < 14) ? E - 1 : E - 13;
-        const year = (month > 2) ? C - 4716 : C - 4715;
+    // private calcDoyFromJD(jd: number): number {
+    //     const z = Math.floor(jd + 0.5);
+    //     const f = (jd + 0.5) - z;
+    //     let A: number;
+    //     if (z < 2299161) {
+    //         A = z;
+    //     } else {
+    //         const alpha = Math.floor((z - 1867216.25) / 36524.25);
+    //         A = z + 1 + alpha - Math.floor(alpha / 4);
+    //     }
+    //     const B = A + 1524;
+    //     const C = Math.floor((B - 122.1) / 365.25);
+    //     const D = Math.floor(365.25 * C);
+    //     const E = Math.floor((B - D) / 30.6001);
+    //     const day = B - D - Math.floor(30.6001 * E) + f;
+    //     const month = (E < 14) ? E - 1 : E - 13;
+    //     const year = (month > 2) ? C - 4716 : C - 4715;
 
-        const k = (this.isLeapYear(year) ? 1 : 2);
-        const doy = Math.floor((275 * month) / 9) - k * Math.floor((month + 9) / 12) + day - 30;
-        return doy;
-    }
+    //     const k = (this.isLeapYear(year) ? 1 : 2);
+    //     const doy = Math.floor((275 * month) / 9) - k * Math.floor((month + 9) / 12) + day - 30;
+    //     return doy;
+    // }
 
-    radToDeg(angleRad: number): number {
+    private radToDeg(angleRad: number): number {
         return (180.0 * angleRad / Math.PI);
     }
 
-    degToRad(angleDeg: number): number {
+    private degToRad(angleDeg: number): number {
         return (Math.PI * angleDeg / 180.0);
     }
 
-    calcGeomMeanLongSun(t: number): number {
+    private calcGeomMeanLongSun(t: number): number {
         let L0 = 280.46646 + t * (36000.76983 + t * (0.0003032))
         while (L0 > 360.0) {
             L0 -= 360.0
@@ -229,17 +233,17 @@ export class SunHourCalculator {
         return L0		// in degrees
     }
 
-    calcGeomMeanAnomalySun(t: number): number {
+    private calcGeomMeanAnomalySun(t: number): number {
         const M = 357.52911 + t * (35999.05029 - 0.0001537 * t);
         return M;		// in degrees
     }
 
-    calcEccentricityEarthOrbit(t: number): number {
+    private calcEccentricityEarthOrbit(t: number): number {
         const e = 0.016708634 - t * (0.000042037 + 0.0000001267 * t);
         return e;		// unitless
     }
 
-    calcSunEqOfCenter(t: number): number {
+    private calcSunEqOfCenter(t: number): number {
         const m = this.calcGeomMeanAnomalySun(t);
         const mrad = this.degToRad(m);
         const sinm = Math.sin(mrad);
@@ -249,48 +253,48 @@ export class SunHourCalculator {
         return C;		// in degrees
     }
 
-    calcSunTrueLong(t: number): number {
+    private calcSunTrueLong(t: number): number {
         const l0 = this.calcGeomMeanLongSun(t);
         const c = this.calcSunEqOfCenter(t);
         const O = l0 + c;
         return O;		// in degrees
     }
 
-    calcSunTrueAnomaly(t: number): number {
-        const m = this.calcGeomMeanAnomalySun(t);
-        const c = this.calcSunEqOfCenter(t);
-        const v = m + c;
-        return v;		// in degrees
-    }
+    // private calcSunTrueAnomaly(t: number): number {
+    //     const m = this.calcGeomMeanAnomalySun(t);
+    //     const c = this.calcSunEqOfCenter(t);
+    //     const v = m + c;
+    //     return v;		// in degrees
+    // }
 
-    calcSunRadVector(t: number): number {
-        const v = this.calcSunTrueAnomaly(t);
-        const e = this.calcEccentricityEarthOrbit(t);
-        const R = (1.000001018 * (1 - e * e)) / (1 + e * Math.cos(this.degToRad(v)));
-        return R;		// in AUs
-    }
+    // private calcSunRadVector(t: number): number {
+    //     const v = this.calcSunTrueAnomaly(t);
+    //     const e = this.calcEccentricityEarthOrbit(t);
+    //     const R = (1.000001018 * (1 - e * e)) / (1 + e * Math.cos(this.degToRad(v)));
+    //     return R;		// in AUs
+    // }
 
-    calcSunApparentLong(t: number): number {
+    private calcSunApparentLong(t: number): number {
         const o = this.calcSunTrueLong(t);
         const omega = 125.04 - 1934.136 * t;
         const lambda = o - 0.00569 - 0.00478 * Math.sin(this.degToRad(omega));
         return lambda;		// in degrees
     }
 
-    calcMeanObliquityOfEcliptic(t: number): number {
+    private calcMeanObliquityOfEcliptic(t: number): number {
         const seconds = 21.448 - t * (46.8150 + t * (0.00059 - t * (0.001813)));
         const e0 = 23.0 + (26.0 + (seconds / 60.0)) / 60.0;
         return e0;		// in degrees
     }
 
-    calcObliquityCorrection(t: number): number {
+    private calcObliquityCorrection(t: number): number {
         const e0 = this.calcMeanObliquityOfEcliptic(t);
         const omega = 125.04 - 1934.136 * t;
         const e = e0 + 0.00256 * Math.cos(this.degToRad(omega));
         return e;		// in degrees
     }
 
-    calcSunDeclination(t:number): number {
+    private calcSunDeclination(t:number): number {
         const e = this.calcObliquityCorrection(t);
         const lambda = this.calcSunApparentLong(t);
         const sint = Math.sin(this.degToRad(e)) * Math.sin(this.degToRad(lambda));
@@ -298,7 +302,7 @@ export class SunHourCalculator {
         return theta;		// in degrees
     }
 
-    calcEquationOfTime(t: number): number {
+    private calcEquationOfTime(t: number): number {
         const epsilon = this.calcObliquityCorrection(t);
         const l0 = this.calcGeomMeanLongSun(t);
         const e = this.calcEccentricityEarthOrbit(t);
@@ -317,7 +321,7 @@ export class SunHourCalculator {
         return this.radToDeg(Etime) * 4.0;	// in minutes of time
     }
 
-    calcHourAngleSunrise(lat: number, solarDec: number) {
+    private calcHourAngleSunrise(lat: number, solarDec: number) {
         const latRad = this.degToRad(lat);
         const sdRad = this.degToRad(solarDec);
         const HAarg = (Math.cos(this.degToRad(90.833)) / (Math.cos(latRad) * Math.cos(sdRad)) - Math.tan(latRad) * Math.tan(sdRad));
@@ -325,26 +329,26 @@ export class SunHourCalculator {
         return HA;		// in radians (for sunset, use -HA)
     }
 
-    isNumber(inputVal: string) {
-        let oneDecimal = false;
-        const inputStr = "" + inputVal;
-        for (let i = 0; i < inputStr.length; i++) {
-            const oneChar = inputStr.charAt(i);
-            if (i === 0 && (oneChar === "-" || oneChar === "+")) {
-                continue;
-            }
-            if (oneChar === "." && !oneDecimal) {
-                oneDecimal = true;
-                continue;
-            }
-            if (oneChar < "0" || oneChar > "9") {
-                return false;
-            }
-        }
-        return true;
-    }
+    // private isNumber(inputVal: string) {
+    //     let oneDecimal = false;
+    //     const inputStr = "" + inputVal;
+    //     for (let i = 0; i < inputStr.length; i++) {
+    //         const oneChar = inputStr.charAt(i);
+    //         if (i === 0 && (oneChar === "-" || oneChar === "+")) {
+    //             continue;
+    //         }
+    //         if (oneChar === "." && !oneDecimal) {
+    //             oneDecimal = true;
+    //             continue;
+    //         }
+    //         if (oneChar < "0" || oneChar > "9") {
+    //             return false;
+    //         }
+    //     }
+    //     return true;
+    // }
 
-    zeroPad(n: number, digits: number): string {
+    private zeroPad(n: number, digits: number): string {
         let result = n.toString();
         while (result.length < digits) {
             result = '0' + n;
@@ -352,7 +356,7 @@ export class SunHourCalculator {
         return result;
     }
 
-    calcAzEl(T: number, localtime: number, latitude: number, longitude: number, zone: number) {
+    private calcAzEl(T: number, localtime: number, latitude: number, longitude: number, zone: number) {
         const eqTime = this.calcEquationOfTime(T)
         const theta = this.calcSunDeclination(T)
         const solarTimeFix = eqTime + 4.0 * longitude - 60.0 * zone
@@ -415,11 +419,11 @@ export class SunHourCalculator {
             refractionCorrection = refractionCorrection / 3600.0;
         }
 
-        const solarZen = zenith - refractionCorrection;
+        //const solarZen = zenith - refractionCorrection;
         return (azimuth)
     }
 
-    calcSolNoon(jd: number, longitude: number, timezone: number, dst: boolean) {
+    private calcSolNoon(jd: number, longitude: number, timezone: number, dst: boolean) {
         const tnoon = this.calcTimeJulianCent(jd - longitude / 360.0)
         let eqTime = this.calcEquationOfTime(tnoon)
         let solNoonOffset = 720.0 - (longitude * 4) - eqTime // in minutes
@@ -435,7 +439,7 @@ export class SunHourCalculator {
         }
     }
 
-    dayString(jd: number, next: number, flag: number) {
+    private dayString(jd: number, next: number, flag: number) {
         let output = "";
         // returns a string in the form DDMMMYYYY[ next] to display prev/next rise/set
         // flag=2 for DD MMM, 3 for DD MM YYYY, 4 for DDMMYYYY next/prev
@@ -468,12 +472,12 @@ export class SunHourCalculator {
         return output;
     }
 
-    timeDateString(JD: number, minutes: number): string {
+    private timeDateString(JD: number, minutes: number): string {
         const output = this.timeString(minutes, 2) + " " + this.dayString(JD, 0, 2);
         return output;
     }
 
-    timeString(minutes: number, flag: number): string
+    private timeString(minutes: number, flag: number): string
     // timeString returns a zero-padded string (HH:MM:SS) given time in minutes
     // flag=2 for HH:MM, 3 for HH:MM:SS
     {
@@ -502,7 +506,7 @@ export class SunHourCalculator {
         return output;
     }
 
-    calcSunriseSetUTC(rise: number, JD: number, latitude: number, longitude: number) {
+    private calcSunriseSetUTC(rise: number, JD: number, latitude: number, longitude: number) {
         const t = this.calcTimeJulianCent(JD);
         const eqTime = this.calcEquationOfTime(t);
         const solarDec = this.calcSunDeclination(t);
@@ -513,7 +517,7 @@ export class SunHourCalculator {
         return timeUTC
     }
 
-    calcSunriseSet(rise: number, JD: number, latitude: number, longitude: number, timezone: number, dst: boolean)
+    private calcSunriseSet(rise: number, JD: number, latitude: number, longitude: number, timezone: number, dst: boolean)
     // rise = 1 for sunrise, 0 for sunset
     {
         const timeUTC = this.calcSunriseSetUTC(rise, JD, latitude, longitude);
@@ -554,21 +558,21 @@ export class SunHourCalculator {
         // }
     }
 
-    calcJDofNextPrevRiseSet(next: number, rise: number, JD: number, latitude: number, longitude: number, tz: number, dst: boolean) {
-        let julianday = JD;
-        const increment = ((next) ? 1.0 : -1.0);
+    // private calcJDofNextPrevRiseSet(next: number, rise: number, JD: number, latitude: number, longitude: number, tz: number, dst: boolean) {
+    //     let julianday = JD;
+    //     const increment = ((next) ? 1.0 : -1.0);
 
-        let time = this.calcSunriseSetUTC(rise, julianday, latitude, longitude);
-        // while (!this.isNumber(time)) {
-        //     julianday += increment;
-        //     time = this.calcSunriseSetUTC(rise, julianday, latitude, longitude);
-        // }
-        let timeLocal = time + tz * 60.0 + ((dst) ? 60.0 : 0.0)
-        while ((timeLocal < 0.0) || (timeLocal >= 1440.0)) {
-            const incr = ((timeLocal < 0) ? 1 : -1)
-            timeLocal += (incr * 1440.0)
-            julianday -= incr
-        }
-        return julianday;
-    }
+    //     let time = this.calcSunriseSetUTC(rise, julianday, latitude, longitude);
+    //     // while (!this.isNumber(time)) {
+    //     //     julianday += increment;
+    //     //     time = this.calcSunriseSetUTC(rise, julianday, latitude, longitude);
+    //     // }
+    //     let timeLocal = time + tz * 60.0 + ((dst) ? 60.0 : 0.0)
+    //     while ((timeLocal < 0.0) || (timeLocal >= 1440.0)) {
+    //         const incr = ((timeLocal < 0) ? 1 : -1)
+    //         timeLocal += (incr * 1440.0)
+    //         julianday -= incr
+    //     }
+    //     return julianday;
+    // }
 }

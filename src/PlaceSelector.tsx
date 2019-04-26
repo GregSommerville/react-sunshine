@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 
-export function PlaceSelector() {
+// define what kind of props are going to be passed in
+interface PlaceSelectorProps {
+  onPlaceChange: (data:any) => void
+}
+
+export function PlaceSelector(props: PlaceSelectorProps) {
   const [lat, setLat] = useState('');
   const [lng, setLng] = useState('');
   const [timezone, setTimezone] = useState('');
@@ -29,6 +34,9 @@ export function PlaceSelector() {
       setLat(String(item.lat));
       setLng(String(item.lng));
       setTimezone(String(item.tz));
+
+      // and notify the app that the place has changed
+      props.onPlaceChange({lat: item.lat, lng: item.lng, tz: item.tz});
     }
   }
 
