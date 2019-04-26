@@ -8,18 +8,26 @@ interface DisplayProps {
 
 export class SuntimesDisplay extends React.Component<DisplayProps, any> {
 
+    private canvasWidth: number = 700;
+    private canvasHeight: number = 500;
+    private sideMargin: number = 25;
+    private topMargin: number = 20;
+
     componentDidMount() {
         const canvas = this.refs.canvas as HTMLCanvasElement;
         const ctx = canvas.getContext("2d");
         const sunData = this.props.sunData;
 
-        // now draw the data
+        // calc size of each day's bar
+        const dayWidth = (this.canvasWidth - 2 * this.sideMargin) / 365;
+        const dayHeight = (this.canvasHeight - 2 * this.topMargin);
+
     }
 
     render() {
         return (
             <div className="col-12">
-                <canvas ref="canvas" width={700} height={500} />
+                <canvas ref="canvas" width={this.canvasWidth} height={this.canvasHeight} />
             </div>
         );
     }
