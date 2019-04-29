@@ -6,10 +6,15 @@ import { SunHourCalculator } from './SunHourCalculator';
 
 class App extends Component {
 
+  constructor(props) {
+    super(props);
+    this.state = {sunData: []}
+  }
+
   // when our place changes, calculate new sun data and pass to the display control by changing the state data
   onPlaceChange = (placeInfo) => {
     const sunCalc = new SunHourCalculator(placeInfo.lat, placeInfo.lng, placeInfo.tz);
-    this.setState("sunData", sunCalc.getSuntimesForYear);
+    this.setState({sunData: sunCalc.getSuntimesForYear()});
   }
 
   render() {
