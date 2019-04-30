@@ -9,10 +9,11 @@ interface DisplayProps {
 export class SuntimesDisplay extends React.Component<DisplayProps, any> {
 
     private canvasWidth: number = 800;
-    private canvasHeight: number = 500;
+    private canvasHeight: number = 450;
     private sideMargin: number = 50;
     private topMargin: number = 20;
     private leftTextX: number = 10;
+    private rightTextX: number = this.canvasWidth - 30;
 
     constructor(props: DisplayProps) {
         super(props);
@@ -51,6 +52,7 @@ export class SuntimesDisplay extends React.Component<DisplayProps, any> {
             // text
             let hourString = (topNumber == 12) ? "mid" : topNumber.toString() + "p";
             ctx.fillText(hourString, this.leftTextX, topY);
+            ctx.fillText(hourString, this.rightTextX, topY);
 
             topNumber--;
             topY += hourGap;
@@ -64,6 +66,7 @@ export class SuntimesDisplay extends React.Component<DisplayProps, any> {
             // text
             hourString = (bottomNumber == 12) ? "mid" : bottomNumber.toString() + "a";
             ctx.fillText(hourString, this.leftTextX, bottomY);
+            ctx.fillText(hourString, this.rightTextX, bottomY);
 
             bottomNumber++;
             if (bottomNumber > 12) bottomNumber = 1;
@@ -74,6 +77,7 @@ export class SuntimesDisplay extends React.Component<DisplayProps, any> {
         ctx.lineTo(canvas.width - this.sideMargin, topY);
         ctx.stroke();
         ctx.fillText("noon", this.leftTextX, topY);
+        ctx.fillText("noon", this.rightTextX, topY);
 
         let x = this.sideMargin;
         let baseY = this.topMargin;
