@@ -11,9 +11,11 @@ export class SuntimesDisplay extends React.Component<DisplayProps, any> {
     private canvasWidth: number = 800;
     private canvasHeight: number = 450;
     private sideMargin: number = 50;
-    private topMargin: number = 20;
+    private topMargin: number = 40;
     private leftTextX: number = 10;
     private rightTextX: number = this.canvasWidth - 30;
+    private topTextY: number = 20;
+    private bottomTextY: number = this.canvasHeight - 20;
     private dayWidth: number = (this.canvasWidth - 2 * this.sideMargin) / 365; 
     private dayHeight: number = (this.canvasHeight - 2 * this.topMargin);  // max height 
 
@@ -71,6 +73,20 @@ export class SuntimesDisplay extends React.Component<DisplayProps, any> {
         ctx.fillText("noon", this.rightTextX, topY);
     }
 
+    drawMonths(ctx: CanvasRenderingContext2D) {
+        const abbrs = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+        ctx.fillStyle = 'lightgray';
+        ctx.font = '12px sanserif';
+        let x = this.sideMargin;
+        const monthWidth = (ctx.canvas.width - this.sideMargin * 2) / abbrs.length;
+        abbrs.forEach(mon => {
+            ctx.fillText(mon, x, this.topTextY);
+            ctx.fillText(mon, x, this.bottomTextY);
+            x += monthWidth;
+        });        
+    }
+
     componentDidUpdate() {
         const canvas = this.refs.canvas as HTMLCanvasElement;
         const ctx = canvas.getContext("2d")!;
@@ -81,6 +97,7 @@ export class SuntimesDisplay extends React.Component<DisplayProps, any> {
 
         // lines and labels for the graph hours
         this.drawHours(ctx);
+        this.drawMonths(ctx);
 
         let x = this.sideMargin;
         let baseY = this.topMargin;

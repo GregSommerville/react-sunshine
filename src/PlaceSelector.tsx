@@ -57,6 +57,7 @@ export function PlaceSelector(props: PlaceSelectorProps) {
     <>
       <div className="col-12">
         <div className='Instructions-box'>
+          <h4>Sunrise/Sunset Calculator</h4><br/>
           <b>Instructions</b><br/><br/>
           Select a place using the listbox (right).<br/><br/>
           A graph showing sunrise and sunset times for the entire year will be displayed below.
