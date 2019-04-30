@@ -13,6 +13,9 @@ Here's a screenshot:
 
 ![Screenshot](screenshot.png)
 
+## Technology Used
+This project uses TypeScript and React.js.  
+
 ## Author
 * **Greg Sommerville** - *Initial work* 
  
