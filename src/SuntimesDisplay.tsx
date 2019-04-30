@@ -7,6 +7,7 @@ interface DisplayProps {
 }
 
 export class SuntimesDisplay extends React.Component<DisplayProps, any> {
+
     private minutesInADay: number = 1440;
     private canvasWidth: number = 800;
     private canvasHeight: number = 450;
@@ -31,8 +32,10 @@ export class SuntimesDisplay extends React.Component<DisplayProps, any> {
         ctx.lineWidth = 1;
         ctx.font = '12px sanserif';
 
-        let topNumber = 12, bottomNumber = 12;
-        let topY = this.topMargin, bottomY = topY + this.dayHeight;
+        let topNumber = 12, 
+            bottomNumber = 12,
+            topY = this.topMargin, 
+            bottomY = topY + this.dayHeight;
         const hourGap = this.dayHeight / 24;
         for (let i = 0; i < 12; i++)
         {
@@ -65,7 +68,9 @@ export class SuntimesDisplay extends React.Component<DisplayProps, any> {
             if (bottomNumber > 12) bottomNumber = 1;
             bottomY -= hourGap;
         }
+
         // draw noon
+        topY = Math.floor(this.canvasHeight / 2) + 0.5;
         ctx.moveTo(this.sideMargin, topY);
         ctx.lineTo(ctx.canvas.width - this.sideMargin, topY);
         ctx.stroke();
@@ -77,7 +82,7 @@ export class SuntimesDisplay extends React.Component<DisplayProps, any> {
         const abbrs = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
         ctx.fillStyle = 'lightgray';
-        ctx.font = '12px sanserif';
+        ctx.font = '12px sanserif';        
         let x = this.sideMargin;
         const monthWidth = (ctx.canvas.width - this.sideMargin * 2) / abbrs.length;
         abbrs.forEach(mon => {
@@ -108,7 +113,12 @@ export class SuntimesDisplay extends React.Component<DisplayProps, any> {
             const topYadjust = (this.minutesInADay - day.sunsetTimeAsNum) / this.minutesInADay;
             const botYadjust = (this.minutesInADay - day.sunriseTimeAsNum) / this.minutesInADay;
 
-            ctx.fillRect(x, baseY + this.dayHeight * topYadjust, this.dayWidth, this.dayHeight * (botYadjust - topYadjust));
+            const x1 = x;
+            const y1 = baseY + this.dayHeight * topYadjust;
+            const width = this.dayWidth;
+            const height = this.dayHeight * (botYadjust - topYadjust);
+
+            ctx.fillRect(x1, y1, width, height);
             x += this.dayWidth;
         });
     }
