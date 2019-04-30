@@ -8,10 +8,11 @@ interface DisplayProps {
 
 export class SuntimesDisplay extends React.Component<DisplayProps, any> {
 
-    private canvasWidth: number = 700;
+    private canvasWidth: number = 800;
     private canvasHeight: number = 500;
-    private sideMargin: number = 25;
+    private sideMargin: number = 50;
     private topMargin: number = 20;
+    private leftTextX: number = 10;
 
     constructor(props: DisplayProps) {
         super(props);
@@ -27,11 +28,56 @@ export class SuntimesDisplay extends React.Component<DisplayProps, any> {
         const dayWidth = (this.canvasWidth - 2 * this.sideMargin) / 365; 
         const dayHeight = (this.canvasHeight - 2 * this.topMargin);  // max height 
 
-        ctx.fillStyle = 'red';
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#0000ff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // show the hours
+        ctx.fillStyle = 'lightgray';
+        ctx.strokeStyle = 'lightgray';
+        ctx.lineWidth = 1;
+        ctx.font = '12px sanserif';
+
+        let topNumber = 12, bottomNumber = 12;
+        let topY = this.topMargin, bottomY = topY + dayHeight;
+        const hourGap = dayHeight / 24;
+        for (let i = 0; i < 12; i++)
+        {
+            // line
+            topY = Math.floor(topY) + 0.5;  // to draw cleaner
+            ctx.moveTo(this.sideMargin, topY);
+            ctx.lineTo(canvas.width - this.sideMargin, topY);
+            ctx.stroke();
+
+            // text
+            let hourString = (topNumber == 12) ? "mid" : topNumber.toString() + "p";
+            ctx.fillText(hourString, this.leftTextX, topY);
+
+            topNumber--;
+            topY += hourGap;
+
+            // line
+            bottomY = Math.floor(bottomY) + 0.5;  // to draw cleaner
+            ctx.moveTo(this.sideMargin, bottomY);
+            ctx.lineTo(canvas.width - this.sideMargin, bottomY);
+            ctx.stroke();
+
+            // text
+            hourString = (bottomNumber == 12) ? "mid" : bottomNumber.toString() + "a";
+            ctx.fillText(hourString, this.leftTextX, bottomY);
+
+            bottomNumber++;
+            if (bottomNumber > 12) bottomNumber = 1;
+            bottomY -= hourGap;
+        }
+        // draw noon
+        ctx.moveTo(this.sideMargin, topY);
+        ctx.lineTo(canvas.width - this.sideMargin, topY);
+        ctx.stroke();
+        ctx.fillText("noon", this.leftTextX, topY);
 
         let x = this.sideMargin;
         let baseY = this.topMargin;
+        ctx.fillStyle = 'gold';
         sunData.forEach(day => {
             // each day has sunriseTimeAsNum and sunsetTimeAsNum, which are both numbers that
             // represent rise and set times as minutes from midnight (0 - 1440)
@@ -49,7 +95,9 @@ export class SuntimesDisplay extends React.Component<DisplayProps, any> {
     render() {
         return (
             <div className="col-12">
-                <canvas ref="canvas" width={this.canvasWidth} height={this.canvasHeight} />
+                <div className="Suntime-display-box">
+                    <canvas ref="canvas" width={this.canvasWidth} height={this.canvasHeight} />
+                </div>
             </div>
         );
     }
