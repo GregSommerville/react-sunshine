@@ -68,3 +68,10 @@
   width: 1030px;
   background-color: #eeeeee;
 }
+
+#infobox {
+  display: block;
+  background-color: white;
+  color: black;
+  font-weight: bold;
+}

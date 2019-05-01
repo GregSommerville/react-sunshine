@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { MouseEvent } from 'react';
 import { DayInfo } from './SunHourCalculator';
 
 // defining the property types
@@ -22,7 +22,17 @@ export class SuntimesDisplay extends React.Component<DisplayProps, any> {
 
     constructor(props: DisplayProps) {
         super(props);
-        this.state = {};
+        this.state = {
+            tooltip: "Mouse over for info"
+        };
+        this.onMouseMove = this.onMouseMove.bind(this);
+    }
+
+    clearDisplay(ctx: CanvasRenderingContext2D) {
+        // background is blue
+        ctx.beginPath();
+        ctx.fillStyle = '#0000ff';
+        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);                
     }
 
     drawHours(ctx: CanvasRenderingContext2D) {
@@ -92,19 +102,8 @@ export class SuntimesDisplay extends React.Component<DisplayProps, any> {
         });        
     }
 
-    componentDidUpdate() {
-        const canvas = this.refs.canvas as HTMLCanvasElement;
-        const ctx = canvas.getContext("2d")!;
+    drawSunData(ctx: CanvasRenderingContext2D) {
         const sunData = this.props.sunData;
-
-        // background is blue
-        ctx.beginPath();
-        ctx.fillStyle = '#0000ff';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        // lines and labels for the graph hours
-        this.drawHours(ctx);
-        this.drawMonths(ctx);
 
         // now create a path that is defined by the sunset times, then the sunrise times
         let x = this.sideMargin;
@@ -134,11 +133,36 @@ export class SuntimesDisplay extends React.Component<DisplayProps, any> {
         ctx.fill();    
     }
 
+    componentDidUpdate() {
+        const canvas = this.refs.canvas as HTMLCanvasElement;
+        const ctx = canvas.getContext("2d")!;
+
+        this.clearDisplay(ctx);        
+        this.drawHours(ctx);  // lines and labels for the graph hours
+        this.drawMonths(ctx); // month labels
+        this.drawSunData(ctx); // the actual data
+    }
+
+    onMouseMove(ev: MouseEvent<HTMLCanvasElement>) {
+        const canvasX = (ev.target as HTMLCanvasElement).offsetLeft;
+        const mouseX = ev.clientX;
+        
+        let dayIndex = (mouseX - canvasX - this.sideMargin) / this.dayWidth;
+        dayIndex = Math.trunc(dayIndex);
+
+        const dayInfo = this.props.sunData[dayIndex];
+        if (dayInfo) {
+            const msg = dayInfo.infoMsg;
+            this.setState({details: msg});
+        }
+    }
+
     render() {
         return (
             <div className="col-12">
                 <div className="Suntime-display-box">
-                    <canvas ref="canvas" width={this.canvasWidth} height={this.canvasHeight} />
+                    <canvas ref="canvas" width={this.canvasWidth} height={this.canvasHeight} onMouseMove={this.onMouseMove} />
+                    <div id='infobox'>{this.state.details}</div>
                 </div>
             </div>
         );

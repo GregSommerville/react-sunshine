@@ -59,9 +59,9 @@ export class SunHourCalculator {
 
                 const infoMsg = 
                     this.monthList[month].month + 
-                    " " + day +
-                    "<br/>Sunrise: " + sunriseFormatted +
-                    "<br/>Sunset: " + sunsetFormatted;
+                    " " + day + ": " + 
+                    "Sunrise: " + sunriseFormatted + "  " + 
+                    "Sunset: " + sunsetFormatted;
 
                 this.suntimes.push({dayNumber, sunriseTimeAsNum, sunsetTimeAsNum, infoMsg});
                 dayNumber++;

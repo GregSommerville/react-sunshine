@@ -9,6 +9,8 @@ graphic display that shows sunrise and sunset times throughout the year to be di
 as having January 1 on the left edge, December 31 on the right edge, with the sunrise and sunset times for each
 day displayed as a yellow/gold column.  
 
+If you move your mouse across the graph, the times for sunrise and sunset will be shown near the bottom of the graph.
+
 Here's a screenshot:
 
 ![Screenshot](screenshot.png)
