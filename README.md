@@ -14,7 +14,10 @@ Here's a screenshot:
 ![Screenshot](screenshot.png)
 
 ## Technology Used
-This project uses TypeScript and React.js.  
+This project uses the following technologies:
+- TypeScript
+- React.js
+- HTML Canvas
 
 ## Author
 * **Greg Sommerville** - *Initial work* 

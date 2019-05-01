@@ -9,7 +9,7 @@ interface DisplayProps {
 export class SuntimesDisplay extends React.Component<DisplayProps, any> {
 
     private minutesInADay: number = 1440;
-    private canvasWidth: number = 800;
+    private canvasWidth: number = 1000;
     private canvasHeight: number = 450;
     private sideMargin: number = 50;
     private topMargin: number = 40;
@@ -97,6 +97,8 @@ export class SuntimesDisplay extends React.Component<DisplayProps, any> {
         const ctx = canvas.getContext("2d")!;
         const sunData = this.props.sunData;
 
+        // background is blue
+        ctx.beginPath();
         ctx.fillStyle = '#0000ff';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -104,23 +106,32 @@ export class SuntimesDisplay extends React.Component<DisplayProps, any> {
         this.drawHours(ctx);
         this.drawMonths(ctx);
 
+        // now create a path that is defined by the sunset times, then the sunrise times
         let x = this.sideMargin;
         let baseY = this.topMargin;
+
         ctx.fillStyle = 'gold';
-        sunData.forEach(day => {
-            // each day has sunriseTimeAsNum and sunsetTimeAsNum, which are both numbers that
-            // represent rise and set times as minutes from midnight (0 - 1440)
+        ctx.beginPath();
+
+        for (let i = 0; i < sunData.length; i++) {
+            const day = sunData[i];
             const topYadjust = (this.minutesInADay - day.sunsetTimeAsNum) / this.minutesInADay;
-            const botYadjust = (this.minutesInADay - day.sunriseTimeAsNum) / this.minutesInADay;
-
-            const x1 = x;
-            const y1 = baseY + this.dayHeight * topYadjust;
-            const width = this.dayWidth;
-            const height = this.dayHeight * (botYadjust - topYadjust);
-
-            ctx.fillRect(x1, y1, width, height);
+            const y = baseY + this.dayHeight * topYadjust;
+            if (i == 0) {
+                ctx.moveTo(x, y);
+            } else {
+                ctx.lineTo(x, y);
+            }
             x += this.dayWidth;
-        });
+        }
+        for (let i = sunData.length - 1; i >= 0; i--) {
+            const day = sunData[i];
+            const botYadjust = (this.minutesInADay - day.sunriseTimeAsNum) / this.minutesInADay;
+            const y = baseY + this.dayHeight * botYadjust;
+            ctx.lineTo(x, y);
+            x -= this.dayWidth;
+        }
+        ctx.fill();    
     }
 
     render() {
