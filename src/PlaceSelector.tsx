@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 // define what kind of props are going to be passed in
 interface PlaceSelectorProps {
-  onPlaceChange: (data:any) => void
+  onPlaceChange: (data: any) => void
 }
 
 export function PlaceSelector(props: PlaceSelectorProps) {
@@ -36,7 +36,7 @@ export function PlaceSelector(props: PlaceSelectorProps) {
       setTimezone(String(item.tz));
 
       // and notify the app that the place has changed
-      props.onPlaceChange({lat: item.lat, lng: item.lng, tz: item.tz});
+      props.onPlaceChange({ lat: item.lat, lng: item.lng, tz: item.tz });
     }
   }
 
@@ -55,39 +55,31 @@ export function PlaceSelector(props: PlaceSelectorProps) {
 
   return (
     <>
-      <div className="col-12">
-        <div className='Instructions-box'>
-          <h4>Sunrise/Sunset Calculator</h4><br/>
-          Select a place using the listbox (right)<br/><br/>
-          Sunrise and sunset times for the entire year will be displayed below<br/><br/>
-          Move your mouse across the graph to display detailed information at the bottom
+      <div className='Place-selector-box'>
+
+        <div className='Place-selector-sidebox'>
+          <b>Presets:</b><br />
+          <select name='presetSelect' size={10} onChange={onPlaceSelectChange} >
+            {options}
+          </select>
         </div>
-        <div className='Place-selector-box'>
 
-          <div className='Place-selector-sidebox'>
-            <b>Presets:</b><br />
-            <select name='presetSelect' size={10} onChange={onPlaceSelectChange} >
-              {options}
-            </select>
-          </div>
+        <div className='Place-selector-sidebox-right'>
+          <span className='Lat-lng-label'>Lat:</span><br />
+          <input className='Lat-lng-textbox' type='text' name='lat' value={lat} onChange={onLatChange} ></input><br /><br />
 
-          <div className='Place-selector-sidebox-right'>
-            <span className='Lat-lng-label'>Lat:</span><br/>
-            <input className='Lat-lng-textbox' type='text' name='lat' value={lat} onChange={onLatChange} ></input><br /><br />
+          <span className='Lat-lng-label'>Lng:</span><br />
+          <input className='Lat-lng-textbox' type='text' name='lng' value={lng} onChange={onLngChange}></input><br /><br />
 
-            <span className='Lat-lng-label'>Lng:</span><br/>
-            <input className='Lat-lng-textbox' type='text' name='lng' value={lng} onChange={onLngChange}></input><br /><br />
-
-            <span className='Lat-lng-label'>Timezone:</span><br/>
-            <select name='timezone' value={timezone} onChange={onTimezoneSelectChange}>
-              <option value='-5'>Eastern</option>
-              <option value='-6'>Central</option>
-              <option value='-7'>Mountain</option>
-              <option value='-8'>Pacific</option>
-              <option value='-9'>Alaska</option>
-              <option value='-10'>Hawaii</option>
-            </select>
-          </div>
+          <span className='Lat-lng-label'>Timezone:</span><br />
+          <select name='timezone' value={timezone} onChange={onTimezoneSelectChange}>
+            <option value='-5'>Eastern</option>
+            <option value='-6'>Central</option>
+            <option value='-7'>Mountain</option>
+            <option value='-8'>Pacific</option>
+            <option value='-9'>Alaska</option>
+            <option value='-10'>Hawaii</option>
+          </select>
         </div>
       </div>
     </>
