@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
 
+export interface PlaceDescriptor {
+  lat: number;
+  lng: number;
+  tz: number;
+}
+
 // define what kind of props are going to be passed in
 interface PlaceSelectorProps {
-  onPlaceChange: (data: any) => void
+  onPlaceChange: (data: PlaceDescriptor) => void
 }
 
 export function PlaceSelector(props: PlaceSelectorProps) {

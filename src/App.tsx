@@ -1,19 +1,25 @@
 import React, { Component } from 'react';
 import './App.css';
-import { PlaceSelector } from './PlaceSelector';
+import { PlaceDescriptor, PlaceSelector } from './PlaceSelector';
 import { SuntimesDisplay } from './SuntimesDisplay';
-import { SunHourCalculator } from './SunHourCalculator';
+import { SunHourCalculator, DayInfo } from './SunHourCalculator';
 import { Instructions } from './Instructions';
 
-class App extends Component {
+type StateData = {
+  sunData: DayInfo[];
+  lat: number;
+  lng: number;
+}
 
-  constructor(props) {
+class App extends Component<{}, StateData> {
+
+  constructor(props: any) {
     super(props);
     this.state = { sunData: [], lat: NaN, lng: NaN }
   }
 
   // when our place changes, calculate new sun data and pass to the display control by changing the state data
-  onPlaceChange = (placeInfo) => {
+  onPlaceChange = (placeInfo: PlaceDescriptor) => {
     const sunCalc = new SunHourCalculator(placeInfo.lat, placeInfo.lng, placeInfo.tz);
     this.setState(
       { sunData: sunCalc.getSuntimesForYear(), 
