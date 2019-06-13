@@ -20,6 +20,7 @@ This project uses the following technologies:
 - TypeScript
 - React.js
 - HTML Canvas
+- Google Maps API
 
 ## Author
 * **Greg Sommerville** - *Initial work* 

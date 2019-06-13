@@ -34,6 +34,7 @@
   display: inline-block;
   border: 1px solid black;
   border-radius: 10px;
+  margin-right: 15px;
   padding: 15px;
   background-color: #eeeeee;
   width: 325px;
@@ -74,4 +75,15 @@
   background-color: white;
   color: black;
   font-weight: bold;
+}
+
+.Google-maps-box {
+  display: inline-block;
+  border: 1px solid black;
+  border-radius: 10px;
+  padding: 15px;
+  background-color: #eeeeee;
+  width: 350px;
+  height: 300px;
+  vertical-align: top;
 }
