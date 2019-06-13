@@ -32,6 +32,7 @@ export function PlaceSelector(props: PlaceSelectorProps) {
     <option key={loc.place}>{loc.place}</option>
   );
 
+  // callback for when the places dropdown/listbox changes value
   const onPlaceSelectChange = (ev: React.FormEvent) => {
     // populate side boxes
     const selectedName = (ev.target as HTMLSelectElement).value;
