@@ -33,7 +33,6 @@ export class GoogleMap extends React.Component<GoogleMapProps, any> {
             if (scriptNodes.length > 0) {
                 const domNode = scriptNodes[0];
                 if (domNode.parentNode) {
-                    console.log("Inserting script into DOM");
                     domNode.parentNode.insertBefore(s, domNode);
                 }
             }
@@ -49,9 +48,6 @@ export class GoogleMap extends React.Component<GoogleMapProps, any> {
     }
 
     onGMapsReady() {
-        console.log('in ready');
-        console.table(this.props.options);
-
         const map = new window.google.maps.Map(
             document.getElementById(this.props.id),
             this.props.options);
@@ -61,8 +57,6 @@ export class GoogleMap extends React.Component<GoogleMapProps, any> {
     }
 
     render() {
-        console.log("In render");
-
         return (
             <div className="Google-maps-box">
                 { this.props.apikey ? 
