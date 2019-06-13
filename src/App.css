@@ -87,3 +87,8 @@
   height: 300px;
   vertical-align: top;
 }
+
+#gmap {
+  height: 100%;
+  width: 100%;
+}

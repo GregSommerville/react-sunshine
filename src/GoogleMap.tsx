@@ -16,19 +16,11 @@ export class GoogleMap extends React.Component<GoogleMapProps, any> {
     
     constructor(props: GoogleMapProps) {
         super(props);
-        this.onScriptLoad = this.onScriptLoad.bind(this);   // make sure "this" is set correctly
+        this.onGMapsReady = this.onGMapsReady.bind(this);   // make sure "this" is set correctly
     }
 
-    onScriptLoad() {
-        const map = new window.google.maps.Map(
-            document.getElementById(this.props.id),
-            this.props.options);
-        if (this.props.onMapLoad) {
-            this.props.onMapLoad(map);        
-        }
-    }
-
-    componentDidMount() {
+    componentDidUpdate() {
+        // dynamically hook in the Google Maps API via inserting a script tag
         if (!window.google) {
 
             // dynamically create a script element
@@ -41,21 +33,36 @@ export class GoogleMap extends React.Component<GoogleMapProps, any> {
             if (scriptNodes.length > 0) {
                 const domNode = scriptNodes[0];
                 if (domNode.parentNode) {
+                    console.log("Inserting script into DOM");
                     domNode.parentNode.insertBefore(s, domNode);
                 }
             }
         
             // once the API is loaded, go ahead and render the map in onScriptLoad()
-            s.addEventListener('load', () => { this.onScriptLoad() });
+            s.addEventListener('load', () => { this.onGMapsReady() });
         }
         else 
         {
             // Google Maps API was already created, so render the map
-            this.onScriptLoad();
+            this.onGMapsReady();
+        }
+    }
+
+    onGMapsReady() {
+        console.log('in ready');
+        console.table(this.props.options);
+
+        const map = new window.google.maps.Map(
+            document.getElementById(this.props.id),
+            this.props.options);
+        if (this.props.onMapLoad) {
+            this.props.onMapLoad(map);                    
         }
     }
 
     render() {
+        console.log("In render");
+
         return (
             <div className="Google-maps-box">
                 { this.props.apikey ? 

@@ -35,10 +35,18 @@ class App extends Component<{}, StateData> {
           <div className="col-12">
             <Instructions />
             <PlaceSelector onPlaceChange={this.onPlaceChange} />
-            <GoogleMap id='gmap' apikey=''
+            <GoogleMap 
+              id='gmap' 
+              apikey=''
               options={{
                 center: { lat: this.state.lat, lng: this.state.lng },
-                zoom: 8
+                zoom: 4
+              }}
+              onMapLoad={map => {
+                new window.google.maps.Marker({
+                  position: { lat: this.state.lat, lng: this.state.lng },
+                  map: map
+                });
               }}
             />
 
